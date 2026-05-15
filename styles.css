@@ -11,6 +11,16 @@
   --shadow: 0 22px 60px rgba(15, 23, 42, 0.45);
 }
 
+/* Màu chữ cho trang chủ */
+.page-home {
+  --text: #e2effa; /* Màu xanh dương nhạt */
+}
+
+/* Màu chữ cho trang admin */
+.page-admin {
+  --text: #fbbf24; /* Màu vàng */
+}
+
 * {
   box-sizing: border-box;
 }
