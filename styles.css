@@ -3,7 +3,7 @@
   --surface: #111b2c;
   --surface-strong: #17263d;
   --text: #e2effa;
-  --muted: #94a3b8;
+  --muted: #ffffff;
   --primary: #10b981;
   --success: #22c55e;
   --danger: #f97316;
@@ -18,7 +18,33 @@
 
 /* Màu chữ cho trang admin */
 .page-admin {
-  --text: #fbbf24; /* Màu vàng */
+  --text: #e2effa; /* Đồng bộ với màu chữ nền tối */
+}
+
+.modal-content {
+  background: rgba(11, 21, 32, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.modal-title,
+.modal-body,
+.modal-footer .btn {
+  color: var(--text);
+}
+
+.modal-footer .btn-primary {
+  background-color: var(--primary);
+  border-color: transparent;
+}
+
+.modal-footer .btn-close {
+  filter: brightness(0) invert(1);
 }
 
 * {
@@ -29,10 +55,11 @@ html,
 body {
   margin: 0;
   min-height: 100%;
+  height: 100%;
 }
 
 body {
-  padding: 96px 24px 24px;
+  padding: 96px 0 24px;
   font-family: 'Be Vietnam Pro', Inter, sans-serif;
   background: radial-gradient(circle at top left, rgba(16, 185, 129, 0.12), transparent 24%),
               radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.14), transparent 28%),
@@ -41,8 +68,10 @@ body {
 }
 
 .app-shell {
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
+  padding: 0 24px;
 }
 
 .page-topbar {
@@ -66,6 +95,7 @@ body {
   display: flex;
   align-items: center;
   gap: 32px;
+  flex: 1;
 }
 
 .brand-logo {
@@ -79,6 +109,8 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
+  margin: 0 auto;
+  justify-content: center;
 }
 
 .topbar-nav a {
@@ -156,7 +188,7 @@ body {
 .tab-button {
   border: 1px solid rgba(148, 163, 184, 0.16);
   background: rgba(255, 255, 255, 0.04);
-  color: #94a3b8;
+  color: #ffffff;
   padding: 12px 18px;
   border-radius: 999px;
   cursor: pointer;
@@ -240,7 +272,7 @@ input[type="search"]::placeholder,
 input[type="text"]::placeholder,
 input[type="number"]::placeholder,
 input[type="date"]::placeholder {
-  color: #94a3b8;
+  color: #ffffff;
 }
 
 input[type="search"]:focus,
@@ -661,7 +693,7 @@ select:focus {
 
 .landing-hero p {
   margin: 0 0 28px;
-  color: #cbd5e1;
+  color: #ffffff;
   font-size: 1rem;
   line-height: 1.75;
 }
@@ -672,6 +704,15 @@ select:focus {
   gap: 14px;
 }
 
+.hero-actions .btn.primary {
+  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.18);
+}
+
+.hero-actions .btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
 .landing-hero__cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(220px, 1fr));
@@ -679,16 +720,25 @@ select:focus {
   margin-top: 38px;
 }
 
-.hero-card {
-  background: rgba(15, 23, 42, 0.88);
+.hero-card,
+.feature-card {
+  background: rgba(15, 23, 42, 0.94);
   border: 1px solid rgba(148, 163, 184, 0.14);
   border-radius: 24px;
   padding: 24px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.hero-card:hover,
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.22);
 }
 
 .hero-card span {
   display: block;
-  color: #94a3b8;
+  color: #ffffff;
   margin-bottom: 12px;
   font-size: 0.88rem;
 }
@@ -701,7 +751,7 @@ select:focus {
 
 .hero-card p {
   margin: 0;
-  color: #cbd5e1;
+  color: #ffffff;
   line-height: 1.7;
 }
 
@@ -737,7 +787,7 @@ select:focus {
 
 .feature-card p {
   margin: 0;
-  color: #cbd5e1;
+  color: #ffffff;
   line-height: 1.75;
 }
 

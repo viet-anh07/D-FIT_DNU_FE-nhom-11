@@ -24,11 +24,6 @@
     </div>
     <div class="topbar-actions">
       <div class="header-actions">
-        <nav class="tabs">
-          <button class="tab-button active" data-target="user-panel">Người dùng</button>
-          <button class="tab-button" data-target="admin-panel" id="adminTab">Admin</button>
-        </nav>
-        <button id="logoutAdminBtn" class="btn secondary hidden" type="button">Đăng xuất Admin</button>
         <div class="header-user">
           <button id="userAvatarBtn" class="avatar-button hidden" type="button" aria-label="User menu">
             <span class="avatar-circle" id="avatarCircle">U</span>
@@ -52,7 +47,6 @@
       <p>Ghi chép bữa ăn, theo dõi calo và cân bằng macro trong một ứng dụng hiện đại, trực quan và dễ sử dụng.</p>
       <div class="hero-actions">
         <a href="#app-shell" class="btn primary">Mở ứng dụng</a>
-        <a href="#features" class="btn secondary">Tìm hiểu thêm</a>
       </div>
     </div>
     <div class="landing-hero__cards">
@@ -333,7 +327,7 @@
         <h3>Đăng nhập người dùng</h3>
         <p>Đăng nhập bằng email và mật khẩu đã đăng ký.</p>
         <form id="loginForm">
-          <input id="loginEmail" type="email" placeholder="Email" required autocomplete="username">
+          <input id="loginUsername" type="text" placeholder="Tên đăng nhập" required autocomplete="username">
           <input id="loginPassword" type="password" placeholder="Mật khẩu" required autocomplete="current-password">
           <div class="form-actions">
             <button id="loginSubmitBtn" class="btn primary" type="submit">Đăng nhập</button>
@@ -348,7 +342,7 @@
         <h3>Đăng ký tài khoản</h3>
         <p>Nhập thông tin để tạo tài khoản người dùng mới.</p>
         <form id="registerForm">
-          <input id="registerName" type="text" placeholder="Họ và tên" required autocomplete="name">
+          <input id="registerUsername" type="text" placeholder="Tên đăng nhập" required autocomplete="username">
           <input id="registerEmail" type="email" placeholder="Email" required autocomplete="email">
           <input id="registerPassword" type="password" placeholder="Mật khẩu" required autocomplete="new-password">
           <input id="registerAge" type="number" placeholder="Tuổi" required min="1" max="120" autocomplete="bday-year">
@@ -375,6 +369,23 @@
         <div class="form-actions">
           <button id="adminLoginBtn" class="btn primary" type="button">Đăng nhập</button>
           <button id="adminCancelBtn" class="btn secondary" type="button">Hủy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">Thành công</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+          <div class="modal-body">
+            <p id="successModalMessage"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Đóng</button>
+          </div>
         </div>
       </div>
     </div>

@@ -68,7 +68,7 @@ const elements = {
   userLogoutBtn: document.getElementById('userLogoutBtn'),
   registerModal: document.getElementById('registerModal'),
   registerForm: document.getElementById('registerForm'),
-  registerName: document.getElementById('registerName'),
+  registerUsername: document.getElementById('registerUsername'),
   registerEmail: document.getElementById('registerEmail'),
   registerPassword: document.getElementById('registerPassword'),
   registerAge: document.getElementById('registerAge'),
@@ -76,9 +76,11 @@ const elements = {
   registerCancelBtn: document.getElementById('registerCancelBtn'),
   loginModal: document.getElementById('loginModal'),
   loginForm: document.getElementById('loginForm'),
-  loginEmail: document.getElementById('loginEmail'),
+  loginUsername: document.getElementById('loginUsername'),
   loginPassword: document.getElementById('loginPassword'),
   loginCancelBtn: document.getElementById('loginCancelBtn'),
+  successModal: document.getElementById('successModal'),
+  successModalMessage: document.getElementById('successModalMessage'),
   logDateInput: document.getElementById('logDateInput'),
   exportCsvBtn: document.getElementById('exportCsvBtn'),
   exportPdfBtn: document.getElementById('exportPdfBtn'),
@@ -267,15 +269,23 @@ function setAdminAuthenticated(value) {
   adminAuthenticated = value;
   if (value) {
     sessionStorage.setItem(STORAGE_ADMIN_AUTH, 'true');
-    elements.logoutAdminBtn.classList.remove('hidden');
-    elements.adminTab.textContent = 'Admin (đã đăng nhập)';
+    if (elements.logoutAdminBtn) {
+      elements.logoutAdminBtn.classList.remove('hidden');
+    }
+    if (elements.adminTab) {
+      elements.adminTab.textContent = 'Admin (đã đăng nhập)';
+    }
     if (elements.userForm) {
       loadUsers();
     }
   } else {
     sessionStorage.removeItem(STORAGE_ADMIN_AUTH);
-    elements.logoutAdminBtn.classList.add('hidden');
-    elements.adminTab.textContent = 'Admin';
+    if (elements.logoutAdminBtn) {
+      elements.logoutAdminBtn.classList.add('hidden');
+    }
+    if (elements.adminTab) {
+      elements.adminTab.textContent = 'Admin';
+    }
     hideAdminPanel();
   }
 }
@@ -284,8 +294,8 @@ function showRegisterModal() {
   if (!elements.registerModal) return;
   elements.registerModal.classList.remove('hidden');
   elements.registerModal.setAttribute('aria-hidden', 'false');
-  if (elements.registerName) {
-    elements.registerName.focus();
+  if (elements.registerUsername) {
+    elements.registerUsername.focus();
   }
 }
 
@@ -300,21 +310,22 @@ function hideRegisterModal() {
 
 function submitRegisterForm(event) {
   event.preventDefault();
-  if (!elements.registerName || !elements.registerEmail || !elements.registerPassword || !elements.registerAge || !elements.registerGender) return;
+  if (!elements.registerUsername || !elements.registerEmail || !elements.registerPassword || !elements.registerAge || !elements.registerGender) return;
 
-  const name = elements.registerName.value.trim();
+  const username = elements.registerUsername.value.trim();
   const email = elements.registerEmail.value.trim();
   const password = elements.registerPassword.value.trim();
   const age = Number(elements.registerAge.value);
   const gender = elements.registerGender.value;
 
-  if (!name || !email || !password || !age || !gender) {
+  if (!username || !email || !password || !age || !gender) {
     showToast('Vui lòng điền đầy đủ thông tin.', 'warning');
     return;
   }
 
   const payload = {
-    name: name,
+    name: username,
+    username: username,
     email: email,
     password: password,
     age: age,
@@ -326,12 +337,14 @@ function submitRegisterForm(event) {
     .then(function (createdUser) {
       addLocalAccount(createdUser);
       showToast('Đăng ký thành công. Bạn có thể đăng nhập ngay bây giờ.', 'success');
+      showStatusModal('Bạn đã đăng ký thành công.');
       hideRegisterModal();
     })
     .catch(function (error) {
       console.error(error);
       addLocalAccount(payload);
       showToast('Đăng ký thành công (lưu cục bộ). Máy chủ hiện không khả dụng.', 'warning');
+      showStatusModal('Bạn đã đăng ký thành công.');
       hideRegisterModal();
     });
 }
@@ -340,8 +353,8 @@ function showLoginModal() {
   if (!elements.loginModal) return;
   elements.loginModal.classList.remove('hidden');
   elements.loginModal.setAttribute('aria-hidden', 'false');
-  if (elements.loginEmail) {
-    elements.loginEmail.focus();
+  if (elements.loginUsername) {
+    elements.loginUsername.focus();
   }
 }
 
@@ -380,13 +393,22 @@ function loadUserSession() {
 
 function submitLoginForm(event) {
   event.preventDefault();
-  if (!elements.loginEmail || !elements.loginPassword) return;
+  if (!elements.loginUsername || !elements.loginPassword) return;
 
-  const email = elements.loginEmail.value.trim();
+  const username = elements.loginUsername.value.trim();
   const password = elements.loginPassword.value.trim();
 
-  if (!email || !password) {
-    showToast('Vui lòng điền email và mật khẩu.', 'warning');
+  if (!username || !password) {
+    showToast('Vui lòng điền tên đăng nhập và mật khẩu.', 'warning');
+    return;
+  }
+
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    setAdminAuthenticated(true);
+    hideLoginModal();
+    showToast('Đăng nhập admin thành công.', 'success');
+    showStatusModal('Bạn đã đăng nhập với quyền admin.');
+    window.location.href = 'admin.html';
     return;
   }
 
@@ -394,11 +416,11 @@ function submitLoginForm(event) {
     .then(function (allUsers) {
       const user = Array.isArray(allUsers)
         ? allUsers.find(function (item) {
-            return item.email === email && item.password === password;
+            return item.username === username && item.password === password;
           })
         : null;
       if (!user) {
-        showToast('Email hoặc mật khẩu không đúng.', 'error');
+        showToast('Tên đăng nhập hoặc mật khẩu không đúng.', 'error');
         return;
       }
       setUserAuthenticated(user);
@@ -406,6 +428,7 @@ function submitLoginForm(event) {
       renderProfile();
       renderUserAvatar();
       showToast('Đăng nhập thành công.', 'success');
+      showStatusModal('Bạn đã đăng nhập thành công.');
     })
     .catch(function (error) {
       console.error(error);
@@ -463,6 +486,7 @@ function logoutUser() {
   hideUserMenu();
   renderProfile();
   showToast('Bạn đã đăng xuất.', 'success');
+  showStatusModal('Bạn đã đăng xuất thành công.');
 }
 
 function showAdminLogin() {
@@ -519,6 +543,17 @@ function showToast(message, icon = 'success') {
   alert(message);
 }
 
+function showStatusModal(message) {
+  if (!elements.successModal || !elements.successModalMessage) return;
+  elements.successModalMessage.textContent = message;
+  if (window.bootstrap && typeof window.bootstrap.Modal === 'function') {
+    const modal = new bootstrap.Modal(elements.successModal);
+    modal.show();
+  } else {
+    alert(message);
+  }
+}
+
 function authenticateAdmin() {
   const username = elements.adminUsernameInput.value.trim();
   const password = elements.adminPasswordInput.value.trim();
@@ -536,7 +571,9 @@ function authenticateAdmin() {
   if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     setAdminAuthenticated(true);
     hideAdminLogin();
-    activateTab(elements.adminTab);
+    if (elements.adminTab) {
+      activateTab(elements.adminTab);
+    }
     renderAdminList();
     renderAdminLog();
     return;
